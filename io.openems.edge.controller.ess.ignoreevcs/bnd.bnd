@@ -1,0 +1,20 @@
+Bundle-Name: OpenEMS Edge Controller io.openems.edge.controller.ess.ignoreevcs
+Bundle-Vendor: OpenEMS Association e.V.
+Bundle-License: https://opensource.org/licenses/EPL-2.0
+Bundle-Version: 1.0.0.${tstamp}
+
+-buildpath: \
+	${buildpath},\
+	io.openems.common,\
+	io.openems.edge.common,\
+	io.openems.edge.controller.api,\
+	io.openems.edge.controller.ess.fixactivepower;version=snapshot,\
+	io.openems.edge.evcs.api;version=snapshot,\
+	io.openems.edge.meter.api;version=snapshot,\
+	io.openems.edge.batteryinverter.api;version=snapshot,\
+	io.openems.edge.pvinverter.api;version=snapshot,\
+	io.openems.edge.goodwe;version=snapshot,\
+	io.openems.edge.ess.api
+
+-testpath: \
+	${testpath}
