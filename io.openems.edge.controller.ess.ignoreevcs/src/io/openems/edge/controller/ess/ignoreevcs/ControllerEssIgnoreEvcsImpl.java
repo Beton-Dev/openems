@@ -16,6 +16,7 @@ import io.openems.edge.common.component.AbstractOpenemsComponent;
 import io.openems.edge.common.component.OpenemsComponent;
 import io.openems.edge.controller.api.Controller;
 import io.openems.edge.ess.api.ManagedSymmetricEss;
+import io.openems.edge.ess.dccharger.api.EssDcCharger;
 import io.openems.edge.evcs.api.ManagedEvcs;
 import io.openems.edge.goodwe.batteryinverter.GoodWeBatteryInverter;
 import io.openems.edge.meter.api.ElectricityMeter;
@@ -38,6 +39,9 @@ public class ControllerEssIgnoreEvcsImpl extends AbstractOpenemsComponent implem
     
     @Reference(policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MANDATORY)
 	private ManagedEvcs evcs;
+    
+    @Reference(policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MANDATORY)
+	private EssDcCharger charger;
 
     private static final int HYSTERESE = 100; // Mindeständerung in Watt
     private static final int MAX_CHANGE_RATE = 500; // Maximal 500 W Änderung pro Zyklus
@@ -66,19 +70,12 @@ public class ControllerEssIgnoreEvcsImpl extends AbstractOpenemsComponent implem
 
     @Override
     public void run() throws OpenemsNamedException {
-        try {
-            int gridPower = meter.getActivePower().get();
+        
+    		// Get Data From Meter/EVCS/Charger
+            int loadPower = meter.getActivePower().get();
             int evcsPower = evcs.getActivePower().get();
-            int pvPower = ess.getActivePower().get();
-            int loadPower = gridPower + pvPower;
-
-            if (evcsPower <= 0) {
-                ess.channel("ControlMode").setValue("internal");
-                return;
-            }
+            int pvPower = charger.getActualPower().get();
             
-            ess.channel("ControlMode").setValue("smart");
-
             int targetPower = pvPower - (loadPower - evcsPower);
 
             double error = targetPower - lastSetPower;
@@ -93,12 +90,8 @@ public class ControllerEssIgnoreEvcsImpl extends AbstractOpenemsComponent implem
             }
 
             if (Math.abs(newSetPower - lastSetPower) > HYSTERESE) {
-                ess.channel("SetActivePower").setValue(newSetPower);
+                ess.setActivePowerEqualsWithPid(newSetPower);
                 lastSetPower = newSetPower;
-                log.info("Batterie-Leistung angepasst: " + newSetPower + " W");
             }
-        } catch (Exception e) {
-            log.error("Fehler in ControllerOptimizeEssEvcsImpl: " + e.getMessage());
-        }
     }
 }
