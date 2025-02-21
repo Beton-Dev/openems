@@ -100,6 +100,7 @@ public class TestOfflineEdgeHandler {
 		assertEquals(expected, msgsch.find(handler).size());
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void checkMetadataEmergencyStop() {
 		final var msgMeta = new Utility.ToManyMsgsMetadata();

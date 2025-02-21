@@ -3,6 +3,7 @@ package io.openems.edge.controller.ess.ignoreevcs;
 import io.openems.edge.common.channel.Doc;
 import io.openems.edge.common.component.OpenemsComponent;
 import io.openems.edge.controller.api.Controller;
+import io.openems.edge.ess.dccharger.api.EssDcCharger;
 
 public interface ControllerEssIgnoreEvcs extends Controller, OpenemsComponent {
 

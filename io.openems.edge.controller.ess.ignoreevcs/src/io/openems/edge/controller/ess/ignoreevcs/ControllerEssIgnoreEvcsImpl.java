@@ -18,7 +18,6 @@ import io.openems.edge.controller.api.Controller;
 import io.openems.edge.ess.api.ManagedSymmetricEss;
 import io.openems.edge.ess.dccharger.api.EssDcCharger;
 import io.openems.edge.evcs.api.ManagedEvcs;
-import io.openems.edge.goodwe.batteryinverter.GoodWeBatteryInverter;
 import io.openems.edge.meter.api.ElectricityMeter;
 
 @Designate(ocd = Config.class, factory = true)
